@@ -17,20 +17,22 @@ public class User {
     @NotEmpty(message = "Last name is required")
     private String lastName;
 
-    private String userType;
-    private String status;
-
     @NotNull(message = "Password is required")
     @NotEmpty(message = "Password is required")
     private String password;
 
-    public User(String email, String firstName, String lastName, String userType, String status, String password) {
+    private String userType;
+    private String status;
+    private long id;
+
+    public User(String email, String firstName, String lastName, String userType, String status, String password, long id) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userType = userType;
         this.status = status;
         this.password = password;
+        this.id = id;
     }
 
     public String getEmail() {
@@ -57,6 +59,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getUserType() {
         return userType;
     }
@@ -73,11 +83,11 @@ public class User {
         this.status = status;
     }
 
-    public String getPassword() {
-        return password;
+    public long getId() {
+        return id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(long id) {
+        this.id = id;
     }
 }

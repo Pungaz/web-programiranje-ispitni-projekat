@@ -2,23 +2,33 @@ package model;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 public class Tag {
     @NotNull(message = "At least one tag is required")
     @NotEmpty(message = "At least one tag is required")
-    private List<String> tags;
+    private String name;
 
-    public Tag(List<String> tags) {
-        this.tags = tags;
+    private long id;
+
+    public Tag(String name, long id) {
+        this.name = name;
+        this.id = id;
     }
 
-    public List<String> getTags() {
-        return tags;
+    public String getTagName() {
+        return name;
     }
 
-    public void setTags(List<String> tags) {
-        this.tags = tags;
+    public void setTagName(String tagName) {
+        this.name = tagName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }
 

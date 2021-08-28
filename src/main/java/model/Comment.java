@@ -15,12 +15,22 @@ public class Comment {
 
     private long createdAt;
     private Post post;
+    private long id;
 
-    public Comment(String author, String text, long createdAt, Post post) {
+    public Comment(String author, String text, long createdAt, Post post, long id) {
         this.author = author;
         this.text = text;
         this.createdAt = createdAt;
         this.post = post;
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getAuthor() {

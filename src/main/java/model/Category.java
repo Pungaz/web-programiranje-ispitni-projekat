@@ -2,6 +2,7 @@ package model;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class Category {
 
@@ -13,9 +14,22 @@ public class Category {
     @NotEmpty(message = "Category description is required")
     private String description;
 
-    public Category(String name, String description) {
+    private long id;
+    private List<Post> posts;
+
+    public Category(String name, String description, long id, List<Post> posts) {
         this.name = name;
         this.description = description;
+        this.id = id;
+        this.posts = posts;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -32,5 +46,13 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }
