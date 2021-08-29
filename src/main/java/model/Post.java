@@ -1,5 +1,9 @@
 package model;
 
+import model.Category;
+import model.Comment;
+import model.User;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;

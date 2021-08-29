@@ -2,12 +2,22 @@ package model;
 
 public class PostTag {
 
+    private long id;
     private Post post;
     private Tag tag;
 
-    public PostTag(Post post, Tag tag) {
+    public PostTag(long id, Post post, Tag tag) {
+        this.id = id;
         this.post = post;
         this.tag = tag;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Post getPost() {
