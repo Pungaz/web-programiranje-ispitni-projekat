@@ -1,9 +1,13 @@
 package bm.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Data
 public class Post {
 
     @NotNull(message = "Title is required")
@@ -16,13 +20,17 @@ public class Post {
 
     @NotNull(message = "Author name is required")
     @NotEmpty(message = "Author name is required")
-    private User author;
+    private String author;
 
     @NotNull(message = "Category is required")
     @NotEmpty(message = "Category is required")
     private Category category;
+    private String category_id;
 
+    @JsonProperty("created_at")
     private long createdAt;
+
+    @JsonProperty("number_of_visits")
     private long numberOfVisits;
     private long id;
     private List<Comment> comments;
@@ -30,7 +38,18 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, String text, User author, Category category, long id, List<Comment> comments) {
+    public Post(String title, String text, String author, String category_id, long id, List<Comment> comments) {
+        this.title = title;
+        this.text = text;
+        this.createdAt = System.currentTimeMillis();
+        this.numberOfVisits = 0;
+        this.author = author;
+        this.category_id = category_id;
+        this.id = id;
+        this.comments = comments;
+    }
+
+    public Post(String title, String text, String author, Category category, long id, List<Comment> comments) {
         this.title = title;
         this.text = text;
         this.createdAt = System.currentTimeMillis();
@@ -81,11 +100,11 @@ public class Post {
         this.numberOfVisits = numberOfVisits;
     }
 
-    public User getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 

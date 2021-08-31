@@ -1,4 +1,4 @@
-package bm.webprogramiranjeispitjava;
+package bm;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

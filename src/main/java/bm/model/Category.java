@@ -1,9 +1,12 @@
 package bm.model;
 
+import lombok.Data;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@Data
 public class Category {
 
     @NotNull(message = "Category name is required")
@@ -20,10 +23,10 @@ public class Category {
     public Category() {
     }
 
-    public Category(String name, String description, long id, List<Post> posts) {
+    public Category(long id, String name, String description, List<Post> posts) {
+        this.id = id;
         this.name = name;
         this.description = description;
-        this.id = id;
         this.posts = posts;
     }
 
