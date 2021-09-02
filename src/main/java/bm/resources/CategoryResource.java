@@ -1,7 +1,7 @@
 package bm.resources;
 
+import bm.models.Category;
 import bm.services.CategoryService;
-import bm.model.Category;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -23,6 +23,13 @@ public class CategoryResource {
         return this.categoryService.addCategory(category);
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Category updateCategory(@Valid Category category) {
+        return this.categoryService.updateCategory(category);
+    }
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,9 +37,11 @@ public class CategoryResource {
         return this.categoryService.listAllCategories();
     }
 
-
-
-
+    @DELETE
+    @Path("/{categoryId}")
+    public void delete(@PathParam("categoryId") long categoryId) {
+        this.categoryService.deleteCategory(categoryId);
+    }
 }
 
 

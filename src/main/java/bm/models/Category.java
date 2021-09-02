@@ -1,12 +1,9 @@
-package bm.model;
-
-import lombok.Data;
+package bm.models;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Data
 public class Category {
 
     @NotNull(message = "Category name is required")

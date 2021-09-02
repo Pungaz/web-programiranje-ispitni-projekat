@@ -1,6 +1,6 @@
 package bm.repositories;
 
-import bm.model.Post;
+import bm.models.Post;
 
 import java.util.List;
 

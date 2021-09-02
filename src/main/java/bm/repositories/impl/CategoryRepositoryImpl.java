@@ -1,16 +1,11 @@
 package bm.repositories.impl;
 
-import bm.model.Category;
-import bm.model.Post;
+import bm.models.Category;
 import bm.repositories.CategoryRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository implements CategoryRepository {
 
@@ -43,7 +38,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                 resultSet = preparedStatement.getGeneratedKeys();
 
                 if (resultSet.next()) {
-                    category.setId(resultSet.getInt(1));
+                    category.setId(resultSet.getLong(1));
                 }
 
                 resultSet.close();
@@ -64,13 +59,42 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
 
     @Override
     public Category updateCategory(Category category) {
-        return null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        long idReturnedByQuery = 0;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("UPDATE category SET name = ? , description = ? WHERE id = ? RETURNING *");
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.setString(2, category.getDescription());
+            preparedStatement.setLong(3, category.getId());
+
+            preparedStatement.executeQuery();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            if (resultSet.next()) {
+                idReturnedByQuery = resultSet.getLong(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        if (idReturnedByQuery == 0) {
+            //TODO db didn't return a valid object, the targeted object in the db probably didn't get updated either. Return this information and redirect user
+            //return GRESKA;
+        }
+        return category;
     }
 
     @Override
     public List<Category> listAllCategories() {
         List<Category> categories = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
 
         Connection connection = null;
         Statement statement = null;
@@ -81,21 +105,8 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from category");
 
-            resultSet = statement.executeQuery("SELECT to_json(sub) AS categories_with_posts\n" +
-                    "FROM  (\n" +
-                    "   SELECT c.*, json_agg(post) AS \"posts\"\n" +
-                    "   FROM   category c\n" +
-                    "   LEFT   JOIN post ON  post.category_id = c.id\n" +
-                    "   WHERE  c.id IN (SELECT id from category)\n" +
-                    "   GROUP  BY c.id\n" +
-                    "   ) sub\t");
-
             while (resultSet.next()) {
-                HashMap<String, Object> map = mapper.readValue(resultSet.getString(1), HashMap.class);
-
-                Category category = mapper.convertValue(map, Category.class);
-
-                categories.add(category);
+                categories.add(new Category(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("description"), null));
             }
 
         } catch (Exception e) {
@@ -109,9 +120,35 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
     }
 
     @Override
-    public void deleteCategory(long category_id) {
+    public void deleteCategory(long categoryId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
 
+            preparedStatement = connection.prepareStatement("SELECT COUNT(*) FROM post WHERE category_id = ?");
+            preparedStatement.setLong(1, categoryId);
+            resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next() && resultSet.getLong("count") == 0){
+                preparedStatement = connection.prepareStatement("DELETE FROM category where id = ?");
+                preparedStatement.setLong(1, categoryId);
+                preparedStatement.executeUpdate();
+
+            }else {
+                //TODO There's at leas 1 post in that category, notify the user about this
+            }
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            this.closeResultSet(resultSet);
+            this.closeStatement(preparedStatement);
+            this.closeConnection(connection);
+        }
     }
-
 
 }

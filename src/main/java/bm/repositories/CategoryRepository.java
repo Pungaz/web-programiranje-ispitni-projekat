@@ -1,6 +1,6 @@
 package bm.repositories;
 
-import bm.model.Category;
+import bm.models.Category;
 
 import java.util.List;
 

@@ -1,13 +1,9 @@
-package bm.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+package bm.models;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Data
 public class Post {
 
     @NotNull(message = "Title is required")
@@ -25,28 +21,13 @@ public class Post {
     @NotNull(message = "Category is required")
     @NotEmpty(message = "Category is required")
     private Category category;
-    private String category_id;
 
-    @JsonProperty("created_at")
     private long createdAt;
-
-    @JsonProperty("number_of_visits")
     private long numberOfVisits;
     private long id;
     private List<Comment> comments;
 
     public Post() {
-    }
-
-    public Post(String title, String text, String author, String category_id, long id, List<Comment> comments) {
-        this.title = title;
-        this.text = text;
-        this.createdAt = System.currentTimeMillis();
-        this.numberOfVisits = 0;
-        this.author = author;
-        this.category_id = category_id;
-        this.id = id;
-        this.comments = comments;
     }
 
     public Post(String title, String text, String author, Category category, long id, List<Comment> comments) {
@@ -76,12 +57,20 @@ public class Post {
         this.text = text;
     }
 
-    public long getId() {
-        return id;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public long getCreatedAt() {
@@ -100,20 +89,12 @@ public class Post {
         this.numberOfVisits = numberOfVisits;
     }
 
-    public String getAuthor() {
-        return author;
+    public long getId() {
+        return id;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public List<Comment> getComments() {

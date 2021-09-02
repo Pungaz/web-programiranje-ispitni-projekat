@@ -1,6 +1,6 @@
 package bm.services;
 
-import bm.model.Category;
+import bm.models.Category;
 import bm.repositories.CategoryRepository;
 
 import javax.inject.Inject;
@@ -15,9 +15,16 @@ public class CategoryService {
         return this.categoryRepository.addCategory(category);
     }
 
-    public List<Category> listAllCategories(){
+    public Category updateCategory(Category category) {
+        return this.categoryRepository.updateCategory(category);
+    }
+
+    public List<Category> listAllCategories() {
         return this.categoryRepository.listAllCategories();
     }
 
+    public void deleteCategory(long categoryId) {
+        this.categoryRepository.deleteCategory(categoryId);
+    }
 
 }

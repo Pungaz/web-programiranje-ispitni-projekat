@@ -1,6 +1,6 @@
 package bm.repositories;
 
-import bm.model.User;
+import bm.models.User;
 
 import java.util.List;
 

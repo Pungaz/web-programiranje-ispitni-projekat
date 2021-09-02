@@ -1,4 +1,4 @@
-package bm.model;
+package bm.models;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

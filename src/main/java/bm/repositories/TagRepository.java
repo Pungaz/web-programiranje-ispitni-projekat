@@ -1,6 +1,6 @@
 package bm.repositories;
 
-import bm.model.Tag;
+import bm.models.Tag;
 
 public interface TagRepository {
     public Tag createTag(Tag tag);

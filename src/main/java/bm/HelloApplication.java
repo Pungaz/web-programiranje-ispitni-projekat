@@ -1,10 +1,10 @@
 package bm;
 
+import bm.repositories.CategoryRepository;
+import bm.repositories.impl.CategoryRepositoryImpl;
 import bm.services.CategoryService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
-import bm.repositories.CategoryRepository;
-import bm.repositories.impl.CategoryRepositoryImpl;
 
 import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
