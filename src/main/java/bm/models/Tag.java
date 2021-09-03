@@ -1,29 +1,26 @@
 package bm.models;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import bm.exceptions.ValidationException;
+import bm.utils.StringUtil;
 
 public class Tag {
-    @NotNull(message = "At least one tag is required")
-    @NotEmpty(message = "At least one tag is required")
-    private String name;
 
     private long id;
+    private String value;
+
 
     public Tag() {
     }
 
-    public Tag(String name, long id) {
-        this.name = name;
+    public Tag(long id, String value) {
         this.id = id;
+        this.value = value;
     }
 
-    public String getTagName() {
-        return name;
-    }
-
-    public void setTagName(String tagName) {
-        this.name = tagName;
+    public void validate() {
+        if (StringUtil.isEmpty(value)) {
+            throw new ValidationException("Validation of tag unsuccessful");
+        }
     }
 
     public long getId() {
@@ -32,6 +29,14 @@ public class Tag {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
 

@@ -9,7 +9,7 @@ public interface CategoryRepository {
 
     public Category updateCategory(Category category);
 
-    public List<Category> listAllCategories();
+    public List<Category> listAllCategories(int offset, int limit);
 
     public void deleteCategory(long category_id);
 }

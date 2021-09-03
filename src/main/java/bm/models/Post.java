@@ -1,27 +1,17 @@
 package bm.models;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import bm.exceptions.ValidationException;
+import bm.utils.ObjectUtil;
+import bm.utils.StringUtil;
+
 import java.util.List;
 
 public class Post {
 
-    @NotNull(message = "Title is required")
-    @NotEmpty(message = "Title is required")
     private String title;
-
-    @NotNull(message = "Text is required")
-    @NotEmpty(message = "Text is required")
     private String text;
-
-    @NotNull(message = "Author name is required")
-    @NotEmpty(message = "Author name is required")
     private String author;
-
-    @NotNull(message = "Category is required")
-    @NotEmpty(message = "Category is required")
     private Category category;
-
     private long createdAt;
     private long numberOfVisits;
     private long id;
@@ -30,15 +20,27 @@ public class Post {
     public Post() {
     }
 
-    public Post(String title, String text, String author, Category category, long id, List<Comment> comments) {
+    public Post(long id, String title, String text, String author, long createdAt, long numberOfVisits, Category category, List<Comment> comments) {
+        this.id = id;
         this.title = title;
         this.text = text;
-        this.createdAt = System.currentTimeMillis();
-        this.numberOfVisits = 0;
         this.author = author;
+        this.createdAt = createdAt;
+        this.numberOfVisits = numberOfVisits;
         this.category = category;
-        this.id = id;
         this.comments = comments;
+    }
+
+    public void validate() {
+        if (StringUtil.isEmpty(title)) {
+            throw new ValidationException("Validation of post unsuccessful");
+        } else if (StringUtil.isEmpty(text)) {
+            throw new ValidationException("Validation of post unsuccessful");
+        } else if (StringUtil.isEmpty(author)) {
+            throw new ValidationException("Validation of post unsuccessful");
+        } else if (ObjectUtil.isEmpty(category)) {
+            throw new ValidationException("Validation of post unsuccessful");
+        }
     }
 
     public String getTitle() {

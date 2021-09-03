@@ -19,8 +19,8 @@ public class CategoryService {
         return this.categoryRepository.updateCategory(category);
     }
 
-    public List<Category> listAllCategories() {
-        return this.categoryRepository.listAllCategories();
+    public List<Category> listAllCategories(int offset, int limit) {
+        return this.categoryRepository.listAllCategories(offset, limit);
     }
 
     public void deleteCategory(long categoryId) {

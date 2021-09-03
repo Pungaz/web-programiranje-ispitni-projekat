@@ -1,26 +1,14 @@
 package bm.models;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import bm.exceptions.ValidationException;
+import bm.utils.StringUtil;
 
 public class User {
 
-    @NotNull(message = "Email is required")
-    @NotEmpty(message = "Email is required")
     private String email;
-
-    @NotNull(message = "First name is required")
-    @NotEmpty(message = "First name is required")
     private String firstName;
-
-    @NotNull(message = "Last name is required")
-    @NotEmpty(message = "Last name is required")
     private String lastName;
-
-    @NotNull(message = "Password is required")
-    @NotEmpty(message = "Password is required")
     private String password;
-
     private String userType;
     private String status;
     private long id;
@@ -28,14 +16,30 @@ public class User {
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String userType, String status, String password, long id) {
+    public User(long id, String email, String firstName, String lastName, String userType, String status, String password) {
+        this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userType = userType;
         this.status = status;
         this.password = password;
-        this.id = id;
+    }
+
+    public void validate() {
+        if (StringUtil.isEmpty(email)) {
+            throw new ValidationException("Validation of user unsuccessful");
+        } else if (StringUtil.isEmpty(firstName)) {
+            throw new ValidationException("Validation of user unsuccessful");
+        } else if (StringUtil.isEmpty(lastName)) {
+            throw new ValidationException("Validation of user unsuccessful");
+        } else if (StringUtil.isEmpty(userType)) {
+            throw new ValidationException("Validation of user unsuccessful");
+        } else if (StringUtil.isEmpty(status)) {
+            throw new ValidationException("Validation of user unsuccessful");
+        } else if (StringUtil.isEmpty(password)) {
+            throw new ValidationException("Validation of user unsuccessful");
+        }
     }
 
     public String getEmail() {

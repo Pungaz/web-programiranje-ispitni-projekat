@@ -1,5 +1,6 @@
 package bm.repositories.impl;
 
+import bm.exceptions.UnknownException;
 import bm.models.Category;
 import bm.repositories.CategoryRepository;
 
@@ -11,7 +12,6 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
 
     @Override
     public Category addCategory(Category category) {
-
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -38,7 +38,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                 resultSet = preparedStatement.getGeneratedKeys();
 
                 if (resultSet.next()) {
-                    category.setId(resultSet.getLong(1));
+                    category.setId(resultSet.getLong("id"));
                 }
 
                 resultSet.close();
@@ -48,7 +48,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                 //TODO IF A CATEGORY ALREADY EXISTS, FORWARD USER TO SAID CATEGORY
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UnknownException();
         } finally {
             this.closeStatement(preparedStatement);
             this.closeResultSet(resultSet);
@@ -62,57 +62,59 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        long idReturnedByQuery = 0;
+        int idReturnedByQuery = 0;
         try {
             connection = this.newConnection();
 
-            preparedStatement = connection.prepareStatement("UPDATE category SET name = ? , description = ? WHERE id = ? RETURNING *");
+            preparedStatement = connection.prepareStatement("WITH rows AS(UPDATE category SET name = ?, description = ? " +
+                    "WHERE id = ? AND NOT EXISTS (SELECT name FROM category WHERE name = ?) RETURNING *) SELECT count(*) FROM rows");
             preparedStatement.setString(1, category.getName());
             preparedStatement.setString(2, category.getDescription());
             preparedStatement.setLong(3, category.getId());
+            preparedStatement.setString(4, category.getName());
 
-            preparedStatement.executeQuery();
-            resultSet = preparedStatement.getGeneratedKeys();
+            resultSet = preparedStatement.executeQuery();
 
-            if (resultSet.next()) {
-                idReturnedByQuery = resultSet.getLong(1);
+            if (resultSet.next() && resultSet.getInt("count") != 0) {
+                idReturnedByQuery = resultSet.getInt("count");
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnknownException();
         } finally {
             this.closeStatement(preparedStatement);
             this.closeResultSet(resultSet);
             this.closeConnection(connection);
         }
         if (idReturnedByQuery == 0) {
-            //TODO db didn't return a valid object, the targeted object in the db probably didn't get updated either. Return this information and redirect user
-            //return GRESKA;
+            //TODO db didn't return a valid object, the targeted object in the db didn't get updated. Return this information and redirect user
         }
         return category;
     }
 
     @Override
-    public List<Category> listAllCategories() {
+    public List<Category> listAllCategories(int offset, int limit) {
         List<Category> categories = new ArrayList<>();
 
         Connection connection = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             connection = this.newConnection();
 
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("select * from category");
+            preparedStatement = connection.prepareStatement("SELECT * FROM category OFFSET ? LIMIT ?");
+            preparedStatement.setInt(1, offset);
+            preparedStatement.setInt(2, limit);
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                categories.add(new Category(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getString("description"), null));
+                categories.add(new Category(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("description"), null));
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnknownException();
         } finally {
-            this.closeStatement(statement);
+            this.closeStatement(preparedStatement);
             this.closeResultSet(resultSet);
             this.closeConnection(connection);
         }
@@ -131,19 +133,19 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             preparedStatement.setLong(1, categoryId);
             resultSet = preparedStatement.executeQuery();
 
-            if(resultSet.next() && resultSet.getLong("count") == 0){
+            if (resultSet.next() && resultSet.getLong("count") == 0) {
                 preparedStatement = connection.prepareStatement("DELETE FROM category where id = ?");
                 preparedStatement.setLong(1, categoryId);
                 preparedStatement.executeUpdate();
 
-            }else {
+            } else {
                 //TODO There's at leas 1 post in that category, notify the user about this
             }
 
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UnknownException();
         } finally {
             this.closeResultSet(resultSet);
             this.closeStatement(preparedStatement);

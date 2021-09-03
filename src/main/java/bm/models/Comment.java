@@ -1,18 +1,12 @@
 package bm.models;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import bm.exceptions.ValidationException;
+import bm.utils.StringUtil;
 
 public class Comment {
 
-    @NotNull(message = "Author name is required")
-    @NotEmpty(message = "Author name is required")
     private String author;
-
-    @NotNull(message = "Text is required")
-    @NotEmpty(message = "Text is required")
     private String text;
-
     private long createdAt;
     private Post post;
     private long id;
@@ -26,6 +20,14 @@ public class Comment {
         this.createdAt = createdAt;
         this.post = post;
         this.id = id;
+    }
+
+    public void validate() {
+        if (StringUtil.isEmpty(author)) {
+            throw new ValidationException("Validation of comment unsuccessful");
+        } else if (StringUtil.isEmpty(text)) {
+            throw new ValidationException("Validation of comment unsuccessful");
+        }
     }
 
     public long getId() {

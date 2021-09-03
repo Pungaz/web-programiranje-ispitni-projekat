@@ -1,19 +1,14 @@
 package bm.models;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import bm.exceptions.ValidationException;
+import bm.utils.StringUtil;
+
 import java.util.List;
 
 public class Category {
 
-    @NotNull(message = "Category name is required")
-    @NotEmpty(message = "Category name is required")
     private String name;
-
-    @NotNull(message = "Category description is required")
-    @NotEmpty(message = "Category description is required")
     private String description;
-
     private long id;
     private List<Post> posts;
 
@@ -25,6 +20,14 @@ public class Category {
         this.name = name;
         this.description = description;
         this.posts = posts;
+    }
+
+    public void validate() {
+        if (StringUtil.isEmpty(name)) {
+            throw new ValidationException("Validation of category unsuccessful");
+        } else if (StringUtil.isEmpty(description)) {
+            throw new ValidationException("Validation of category unsuccessful");
+        }
     }
 
     public long getId() {

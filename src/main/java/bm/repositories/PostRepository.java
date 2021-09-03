@@ -9,7 +9,7 @@ public interface PostRepository {
 
     public Post updatePost(Post post);
 
-    public List<Post> listAllPosts();
+    public List<Post> listAllPosts(int offset, int limit);
 
     public List<Post> listPostsByTags(long tag_id);
 

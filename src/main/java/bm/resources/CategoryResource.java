@@ -10,7 +10,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("/categories")
-
 public class CategoryResource {
 
     @Inject
@@ -31,10 +30,9 @@ public class CategoryResource {
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Category> listAllCategories() {
-        return this.categoryService.listAllCategories();
+    public List<Category> listAllCategories(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit) {
+        return this.categoryService.listAllCategories(offset, limit);
     }
 
     @DELETE
