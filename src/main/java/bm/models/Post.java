@@ -1,7 +1,7 @@
 package bm.models;
 
 import bm.exceptions.ValidationException;
-import bm.utils.ObjectUtil;
+import bm.utils.CategoryUtil;
 import bm.utils.StringUtil;
 
 import java.util.List;
@@ -33,13 +33,13 @@ public class Post {
 
     public void validate() {
         if (StringUtil.isEmpty(title)) {
-            throw new ValidationException("Validation of post unsuccessful");
+            throw new ValidationException("Validation of post unsuccessful, title is invalid");
         } else if (StringUtil.isEmpty(text)) {
-            throw new ValidationException("Validation of post unsuccessful");
+            throw new ValidationException("Validation of post unsuccessful, text is invalid");
         } else if (StringUtil.isEmpty(author)) {
-            throw new ValidationException("Validation of post unsuccessful");
-        } else if (ObjectUtil.isEmpty(category)) {
-            throw new ValidationException("Validation of post unsuccessful");
+            throw new ValidationException("Validation of post unsuccessful, author is invalid");
+        } else if (CategoryUtil.isEmpty(category)) {
+            throw new ValidationException("Validation of post unsuccessful, category is invalid");
         }
     }
 

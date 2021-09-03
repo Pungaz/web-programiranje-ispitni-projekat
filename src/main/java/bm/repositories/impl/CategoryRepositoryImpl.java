@@ -1,6 +1,7 @@
 package bm.repositories.impl;
 
 import bm.exceptions.UnknownException;
+import bm.exceptions.ValidationException;
 import bm.models.Category;
 import bm.repositories.CategoryRepository;
 

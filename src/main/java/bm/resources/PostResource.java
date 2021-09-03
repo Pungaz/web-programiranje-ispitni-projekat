@@ -18,7 +18,8 @@ public class PostResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Post addPost(@Valid Post post){
+    public Post addPost(Post post){
+        post.validate();
         return this.postService.addPost(post);
     }
 

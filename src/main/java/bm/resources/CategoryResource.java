@@ -18,14 +18,14 @@ public class CategoryResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Category addCategory(@Valid Category category) {
+    public Category addCategory(Category category) {
         return this.categoryService.addCategory(category);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Category updateCategory(@Valid Category category) {
+    public Category updateCategory(Category category) {
         return this.categoryService.updateCategory(category);
     }
 

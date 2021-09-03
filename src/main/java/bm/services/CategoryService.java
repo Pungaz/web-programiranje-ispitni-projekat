@@ -12,6 +12,7 @@ public class CategoryService {
     CategoryRepository categoryRepository;
 
     public Category addCategory(Category category) {
+        category.validate();
         return this.categoryRepository.addCategory(category);
     }
 

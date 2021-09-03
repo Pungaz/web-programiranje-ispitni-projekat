@@ -1,7 +1,7 @@
 package bm.utils;
 
 public class StringUtil {
-    public static boolean isEmpty(String sting){
-        return sting == null || sting.trim().equals("");
+    public static boolean isEmpty(String string){
+        return string == null || string.trim().equals("");
     }
 }
