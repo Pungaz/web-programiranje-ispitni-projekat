@@ -1,4 +1,4 @@
-package bm.repositories;
+package bm.repositories.interfaces;
 
 import bm.models.Post;
 

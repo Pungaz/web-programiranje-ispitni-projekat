@@ -1,8 +1,9 @@
 package bm.repositories.impl;
 
+import bm.exceptions.UnknownException;
 import bm.models.Category;
 import bm.models.Post;
-import bm.repositories.PostRepository;
+import bm.repositories.interfaces.PostRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -47,7 +48,7 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
             connection.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new UnknownException();
         } finally {
             this.closeStatement(preparedStatement);
             this.closeResultSet(resultSet);
@@ -96,7 +97,7 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new UnknownException();
         } finally {
             this.closeStatement(preparedStatement);
             this.closeResultSet(resultSet);

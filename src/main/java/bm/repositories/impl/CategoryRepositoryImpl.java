@@ -1,11 +1,15 @@
 package bm.repositories.impl;
 
+import bm.exceptions.ObjectExistsException;
+import bm.exceptions.FailedUpdateException;
 import bm.exceptions.UnknownException;
-import bm.exceptions.ValidationException;
 import bm.models.Category;
-import bm.repositories.CategoryRepository;
+import bm.repositories.interfaces.CategoryRepository;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,11 +46,8 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                     category.setId(resultSet.getLong("id"));
                 }
 
-                resultSet.close();
-                preparedStatement.close();
-                connection.close();
             } else if (resultSet.getBoolean("exists")) {
-                //TODO IF A CATEGORY ALREADY EXISTS, FORWARD USER TO SAID CATEGORY
+                throw new ObjectExistsException("Category by the name of '" + category.getName() + "' already exists." );
             }
         } catch (SQLException e) {
             throw new UnknownException();
@@ -88,7 +89,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             this.closeConnection(connection);
         }
         if (idReturnedByQuery == 0) {
-            //TODO db didn't return a valid object, the targeted object in the db didn't get updated. Return this information and redirect user
+            throw new FailedUpdateException("Invalid input, failed to update category");
         }
         return category;
     }
@@ -140,7 +141,8 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                 preparedStatement.executeUpdate();
 
             } else {
-                //TODO There's at leas 1 post in that category, notify the user about this
+                throw new ObjectExistsException("At least one post exists in this category. Delete the post before" +
+                        " deleting the category");
             }
 
             preparedStatement.close();

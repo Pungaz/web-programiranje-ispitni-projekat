@@ -1,15 +1,15 @@
-package bm.repositories;
+package bm.services.interfaces;
 
 import bm.models.Category;
 
 import java.util.List;
 
-public interface CategoryRepository {
+public interface CategoryService {
     public Category addCategory(Category category);
 
     public Category updateCategory(Category category);
 
     public List<Category> listAllCategories(int offset, int limit);
 
-    public void deleteCategory(long category_id);
+    public void deleteCategory(long categoryId);
 }

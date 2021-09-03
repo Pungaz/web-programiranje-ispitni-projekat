@@ -1,5 +1,7 @@
 package bm.repositories.impl;
 
+import bm.exceptions.UnknownException;
+
 import java.sql.*;
 import java.util.Optional;
 
@@ -9,7 +11,7 @@ abstract public class PostgreSqlAbstractRepository {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new UnknownException();
         }
     }
 
@@ -42,24 +44,24 @@ abstract public class PostgreSqlAbstractRepository {
     protected void closeStatement(Statement statement) {
         try {
             Optional.of(statement).get().close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throw new UnknownException();
         }
     }
 
     protected void closeResultSet(ResultSet resultSet) {
         try {
             Optional.of(resultSet).get().close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throw new UnknownException();
         }
     }
 
     protected void closeConnection(Connection connection) {
         try {
             Optional.of(connection).get().close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throw new UnknownException();
         }
     }
 }

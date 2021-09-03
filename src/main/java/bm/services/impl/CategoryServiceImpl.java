@@ -1,12 +1,13 @@
-package bm.services;
+package bm.services.impl;
 
 import bm.models.Category;
-import bm.repositories.CategoryRepository;
+import bm.repositories.interfaces.CategoryRepository;
+import bm.services.interfaces.CategoryService;
 
 import javax.inject.Inject;
 import java.util.List;
 
-public class CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
     @Inject
     CategoryRepository categoryRepository;

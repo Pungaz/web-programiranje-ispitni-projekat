@@ -5,7 +5,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class UnknownException extends RuntimeException implements ExceptionMapper<ValidationException> {
+public class UnknownException extends RuntimeException implements ExceptionMapper<UnknownException> {
 
     private static final String DEFAULT_ERROR = "Unknown error occurred";
 
@@ -19,8 +19,8 @@ public class UnknownException extends RuntimeException implements ExceptionMappe
     }
 
     @Override
-    public Response toResponse(ValidationException exception) {
-        return Response.status(400).entity(exception.getMessage())
+    public Response toResponse(UnknownException exception) {
+        return Response.status(500).entity(exception.getMessage())
                 .type("text/plain").build();
     }
 }
