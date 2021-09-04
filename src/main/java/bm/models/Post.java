@@ -3,7 +3,6 @@ package bm.models;
 import bm.exceptions.ValidationException;
 import bm.utils.CategoryUtil;
 import bm.utils.StringUtil;
-import bm.utils.TagUtil;
 
 import java.util.List;
 
@@ -43,6 +42,8 @@ public class Post {
             throw new ValidationException("Validation of post unsuccessful, author is invalid");
         } else if (CategoryUtil.isEmpty(category)) {
             throw new ValidationException("Validation of post unsuccessful, category is invalid");
+        } else if (StringUtil.isEmpty(tagsString)){
+            throw new ValidationException("Validation of post unsuccessful, tags field is invalid");
         }
     }
 

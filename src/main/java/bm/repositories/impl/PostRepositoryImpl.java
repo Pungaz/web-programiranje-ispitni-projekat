@@ -1,9 +1,9 @@
 package bm.repositories.impl;
 
+import bm.exceptions.NotFoundException;
 import bm.exceptions.UnknownException;
 import bm.models.Category;
 import bm.models.Post;
-import bm.models.Tag;
 import bm.repositories.interfaces.PostRepository;
 
 import java.sql.Connection;
@@ -23,29 +23,35 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
         try {
             connection = this.newConnection();
 
-            String[] generatedColumns = {"id"};
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT * FROM category WHERE id = ?)");
+            preparedStatement.setLong(1, post.getCategory().getId());
 
-            preparedStatement = connection.prepareStatement("INSERT INTO post(title, text, author, created_at, number_of_visits, category_id)\n" +
-                    "VALUES (?, ?, ?, ?, ?, ?)\n" +
-                    "RETURNING *;", generatedColumns);
-            preparedStatement.setString(1, post.getTitle());
-            preparedStatement.setString(2, post.getText());
-            preparedStatement.setString(3, post.getAuthor());
-            preparedStatement.setLong(4, System.currentTimeMillis());
-            preparedStatement.setLong(5, 0);
-            preparedStatement.setLong(6, post.getCategory().getId());
+            resultSet = preparedStatement.executeQuery();
 
-            preparedStatement.executeUpdate();
-            resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next() && resultSet.getBoolean("exists")) {
 
-            if (resultSet.next()) {
-                post.setId(resultSet.getLong("id"));
-                post.setCreatedAt(resultSet.getLong("created_at"));
+                String[] generatedColumns = {"id"};
+
+                preparedStatement = connection.prepareStatement("INSERT INTO post(title, text, author, created_at, number_of_visits, category_id)\n" +
+                        "VALUES (?, ?, ?, ?, ?, ?)\n" +
+                        "RETURNING *;", generatedColumns);
+                preparedStatement.setString(1, post.getTitle());
+                preparedStatement.setString(2, post.getText());
+                preparedStatement.setString(3, post.getAuthor());
+                preparedStatement.setLong(4, System.currentTimeMillis());
+                preparedStatement.setLong(5, 0);
+                preparedStatement.setLong(6, post.getCategory().getId());
+
+                preparedStatement.executeUpdate();
+                resultSet = preparedStatement.getGeneratedKeys();
+
+                if (resultSet.next()) {
+                    post.setId(resultSet.getLong("id"));
+                    post.setCreatedAt(resultSet.getLong("created_at"));
+                }
+            } else {
+                throw new NotFoundException("Category doesn't exist");
             }
-
-            resultSet.close();
-            preparedStatement.close();
-            connection.close();
 
         } catch (SQLException e) {
             throw new UnknownException();
@@ -59,7 +65,39 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
 
     @Override
     public Post updatePost(Post post) {
-        return null;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("select exists(select from category where id = ?)");
+            preparedStatement.setLong(1, post.getCategory().getId());
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next() && resultSet.getBoolean("exists")) {
+
+                preparedStatement = connection.prepareStatement("UPDATE post SET title = ?, text = ?, author = ?, " +
+                        "category_id = ?, number_of_visits = ? WHERE id = ? ");
+                preparedStatement.setString(1, post.getTitle());
+                preparedStatement.setString(2, post.getText());
+                preparedStatement.setString(3, post.getAuthor());
+                preparedStatement.setLong(4, post.getCategory().getId());
+                preparedStatement.setLong(5, post.getNumberOfVisits());
+                preparedStatement.setLong(6, post.getId());
+
+                preparedStatement.executeUpdate();
+            } else {
+                throw new NotFoundException("Category with id '" + post.getCategory().getId() + "' dos not exist");
+            }
+        } catch (Exception e) {
+            throw new UnknownException();
+        } finally {
+            this.closeResultSet(resultSet);
+            this.closeStatement(preparedStatement);
+            this.closeConnection(connection);
+        }
+        return post;
     }
 
     @Override
@@ -109,7 +147,7 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
                 }
             }
 
-            for (Post post : posts){
+            for (Post post : posts) {
                 post.setTagsString(String.join(", ", postTags.get(post.getId())));
             }
 
@@ -129,7 +167,21 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
     }
 
     @Override
-    public void deletePost(long post_id) {
+    public void deletePost(long postId) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = this.newConnection();
 
+            preparedStatement = connection.prepareStatement("DELETE FROM post where id = ?");
+            preparedStatement.setLong(1, postId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new UnknownException();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeConnection(connection);
+        }
     }
 }

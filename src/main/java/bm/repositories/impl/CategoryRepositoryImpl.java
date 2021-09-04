@@ -1,8 +1,8 @@
 package bm.repositories.impl;
 
 import bm.exceptions.ObjectExistsException;
-import bm.exceptions.FailedUpdateException;
 import bm.exceptions.UnknownException;
+import bm.exceptions.ValidationException;
 import bm.models.Category;
 import bm.repositories.interfaces.CategoryRepository;
 
@@ -47,7 +47,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                 }
 
             } else if (resultSet.getBoolean("exists")) {
-                throw new ObjectExistsException("Category by the name of '" + category.getName() + "' already exists." );
+                throw new ObjectExistsException("Category by the name of '" + category.getName() + "' already exists.");
             }
         } catch (SQLException e) {
             throw new UnknownException();
@@ -69,11 +69,12 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             connection = this.newConnection();
 
             preparedStatement = connection.prepareStatement("WITH rows AS(UPDATE category SET name = ?, description = ? " +
-                    "WHERE id = ? AND NOT EXISTS (SELECT name FROM category WHERE name = ?) RETURNING *) SELECT count(*) FROM rows");
+                    "WHERE id = ? AND NOT EXISTS (SELECT name FROM category WHERE name = ? AND id != ?) RETURNING *) SELECT count(*) FROM rows");
             preparedStatement.setString(1, category.getName());
             preparedStatement.setString(2, category.getDescription());
             preparedStatement.setLong(3, category.getId());
             preparedStatement.setString(4, category.getName());
+            preparedStatement.setLong(5, category.getId());
 
             resultSet = preparedStatement.executeQuery();
 
@@ -89,7 +90,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             this.closeConnection(connection);
         }
         if (idReturnedByQuery == 0) {
-            throw new FailedUpdateException("Invalid input, failed to update category");
+            throw new ValidationException("Invalid input, failed to update category");
         }
         return category;
     }

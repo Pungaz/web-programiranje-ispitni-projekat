@@ -10,6 +10,8 @@ import bm.repositories.interfaces.PostTagRepository;
 import bm.repositories.interfaces.TagRepository;
 import bm.services.impl.CategoryServiceImpl;
 import bm.services.impl.PostServiceImpl;
+import bm.services.interfaces.CategoryService;
+import bm.services.interfaces.PostService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -28,8 +30,8 @@ public class HelloApplication extends ResourceConfig {
                 this.bind(TagRepositoryImpl.class).to(TagRepository.class).in(Singleton.class);
                 this.bind(PostTagRepositoryImpl.class).to(PostTagRepository.class).in(Singleton.class);
 
-                this.bindAsContract(CategoryServiceImpl.class);
-                this.bindAsContract(PostServiceImpl.class);
+                this.bindAsContract(CategoryServiceImpl.class).to(CategoryService.class).in(Singleton.class);
+                this.bindAsContract(PostServiceImpl.class).to(PostService.class).in(Singleton.class);
             }
         };
         register(binder);

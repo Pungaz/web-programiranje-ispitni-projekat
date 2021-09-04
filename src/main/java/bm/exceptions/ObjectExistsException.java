@@ -20,7 +20,7 @@ public class ObjectExistsException extends RuntimeException implements Exception
 
     @Override
     public Response toResponse(ObjectExistsException exception) {
-        return Response.status(400).entity(exception.getMessage())
+        return Response.status(409).entity(exception.getMessage())
                 .type("text/plain").build();
     }
 }
