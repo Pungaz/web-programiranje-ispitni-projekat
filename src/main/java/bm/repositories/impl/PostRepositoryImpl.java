@@ -3,14 +3,14 @@ package bm.repositories.impl;
 import bm.exceptions.UnknownException;
 import bm.models.Category;
 import bm.models.Post;
+import bm.models.Tag;
 import bm.repositories.interfaces.PostRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements PostRepository {
 
@@ -66,7 +66,7 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
     public List<Post> listAllPosts(int offset, int limit) {
         List<Post> posts = new ArrayList<>();
         int postId = 1, postTitle = 2, postText = 3, postAuthor = 4, postCreatedAt = 5, postNumberOfVisits = 6,
-                categoryId = 8, categoryName = 9, categoryDescription = 10;
+                tagValue = 9, categoryId = 10, categoryName = 11, categoryDescription = 12;
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -74,26 +74,43 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
         try {
             connection = this.newConnection();
 
-            preparedStatement = connection.prepareStatement("SELECT\n" +
-                    "    post.*, category.*\n" +
-                    "FROM\n" +
-                    "    post\n" +
-                    "FULL JOIN category \n" +
-                    "   ON post.category_id = category.id\n" +
-                    "WHERE post.category_id IS NOT NULL\n" +
-                    "order by post.created_at desc " +
+            preparedStatement = connection.prepareStatement("SELECT p.*, t.*, c.* \n" +
+                    "FROM(\n" +
+                    "\t\tpost_tag as pt \n" +
+                    "\t\tFULL JOIN post as p \n" +
+                    "\t\t\ton pt.post_id = p.id \n" +
+                    "\t\tLEFT JOIN tag as t \n" +
+                    "\t\t\ton pt.tag_id = t.id\n" +
+                    "\t) \n" +
+                    "LEFT JOIN category as c \n" +
+                    "\ton p.category_id = c.id\n" +
+                    "order by p.created_at desc\n" +
                     "OFFSET ? LIMIT ?");
             preparedStatement.setLong(1, offset);
             preparedStatement.setLong(2, limit);
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                Category category = new Category(resultSet.getLong(categoryId), resultSet.getString(categoryName),
-                        resultSet.getString(categoryDescription), null);
+            Map<Long, List<String>> postTags = new HashMap<>();
 
-                posts.add(new Post(resultSet.getLong(postId), resultSet.getString(postTitle), resultSet.getString(postText),
-                        resultSet.getString(postAuthor), resultSet.getLong(postCreatedAt),
-                        resultSet.getLong(postNumberOfVisits), category, null));
+            while (resultSet.next()) {
+                long currentPostId = resultSet.getLong(postId);
+
+                if (!postTags.containsKey(currentPostId)) {
+                    postTags.put(currentPostId, Collections.singletonList(resultSet.getString(tagValue)));
+
+                    Category category = new Category(resultSet.getLong(categoryId), resultSet.getString(categoryName),
+                            resultSet.getString(categoryDescription), null);
+
+                    posts.add(new Post(resultSet.getLong(postId), resultSet.getString(postTitle), resultSet.getString(postText),
+                            resultSet.getString(postAuthor), resultSet.getLong(postCreatedAt),
+                            resultSet.getLong(postNumberOfVisits), category, null, null));
+                } else {
+                    postTags.get(currentPostId).add(resultSet.getString(tagValue));
+                }
+            }
+
+            for (Post post : posts){
+                post.setTagsString(String.join(", ", postTags.get(post.getId())));
             }
 
         } catch (Exception e) {

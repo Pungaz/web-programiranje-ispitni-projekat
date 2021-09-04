@@ -3,6 +3,7 @@ package bm.models;
 import bm.exceptions.ValidationException;
 import bm.utils.CategoryUtil;
 import bm.utils.StringUtil;
+import bm.utils.TagUtil;
 
 import java.util.List;
 
@@ -16,11 +17,12 @@ public class Post {
     private long numberOfVisits;
     private long id;
     private List<Comment> comments;
+    private String tagsString;
 
     public Post() {
     }
 
-    public Post(long id, String title, String text, String author, long createdAt, long numberOfVisits, Category category, List<Comment> comments) {
+    public Post(long id, String title, String text, String author, long createdAt, long numberOfVisits, Category category, List<Comment> comments, String tagsString) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -29,6 +31,7 @@ public class Post {
         this.numberOfVisits = numberOfVisits;
         this.category = category;
         this.comments = comments;
+        this.tagsString = tagsString;
     }
 
     public void validate() {
@@ -105,6 +108,14 @@ public class Post {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getTagsString() {
+        return tagsString;
+    }
+
+    public void setTagsString(String tagsString) {
+        this.tagsString = tagsString;
     }
 }
 
