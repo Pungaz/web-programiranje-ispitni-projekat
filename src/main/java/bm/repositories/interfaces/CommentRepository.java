@@ -1,6 +1,6 @@
 package bm.repositories.interfaces;
 
-import bm.models.Comment;
+import bm.DTO.Comment;
 
 import java.util.List;
 

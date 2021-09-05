@@ -1,7 +1,7 @@
 package bm.services.impl;
 
-import bm.models.Post;
-import bm.models.Tag;
+import bm.DTO.Post;
+import bm.DTO.Tag;
 import bm.repositories.interfaces.PostRepository;
 import bm.repositories.interfaces.PostTagRepository;
 import bm.repositories.interfaces.TagRepository;
@@ -9,8 +9,6 @@ import bm.services.interfaces.PostService;
 import bm.utils.StringUtil;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

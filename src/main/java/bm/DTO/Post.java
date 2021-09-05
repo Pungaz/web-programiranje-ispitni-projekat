@@ -1,4 +1,4 @@
-package bm.models;
+package bm.DTO;
 
 import bm.exceptions.ValidationException;
 import bm.utils.CategoryUtil;

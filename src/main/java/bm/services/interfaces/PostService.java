@@ -1,6 +1,6 @@
 package bm.services.interfaces;
 
-import bm.models.Post;
+import bm.DTO.Post;
 
 import java.util.List;
 

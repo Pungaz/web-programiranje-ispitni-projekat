@@ -1,6 +1,6 @@
 package bm.resources;
 
-import bm.models.Post;
+import bm.DTO.Post;
 import bm.services.interfaces.PostService;
 
 import javax.inject.Inject;

@@ -1,7 +1,7 @@
 package bm.repositories.impl;
 
 import bm.exceptions.UnknownException;
-import bm.models.Tag;
+import bm.DTO.Tag;
 import bm.repositories.interfaces.TagRepository;
 
 import java.sql.Connection;

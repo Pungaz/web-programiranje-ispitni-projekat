@@ -1,7 +1,7 @@
 package bm.repositories.interfaces;
 
-import bm.models.Category;
-import bm.models.Post;
+import bm.DTO.Category;
+import bm.DTO.Post;
 
 import java.util.List;
 

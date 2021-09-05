@@ -3,8 +3,8 @@ package bm.repositories.impl;
 import bm.exceptions.ObjectExistsException;
 import bm.exceptions.UnknownException;
 import bm.exceptions.ValidationException;
-import bm.models.Category;
-import bm.models.Post;
+import bm.DTO.Category;
+import bm.DTO.Post;
 import bm.repositories.interfaces.CategoryRepository;
 
 import java.sql.Connection;

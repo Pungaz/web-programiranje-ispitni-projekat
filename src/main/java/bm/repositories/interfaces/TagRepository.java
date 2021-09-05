@@ -1,6 +1,6 @@
 package bm.repositories.interfaces;
 
-import bm.models.Tag;
+import bm.DTO.Tag;
 
 public interface TagRepository {
     public Tag createTagIfNameNotExist(Tag tag);

@@ -1,7 +1,7 @@
 package bm.services.impl;
 
-import bm.models.Category;
-import bm.models.Post;
+import bm.DTO.Category;
+import bm.DTO.Post;
 import bm.repositories.interfaces.CategoryRepository;
 import bm.services.interfaces.CategoryService;
 

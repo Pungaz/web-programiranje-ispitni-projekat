@@ -1,6 +1,6 @@
 package bm.repositories.interfaces;
 
-import bm.models.User;
+import bm.DTO.User;
 
 import java.util.List;
 

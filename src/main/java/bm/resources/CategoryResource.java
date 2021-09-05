@@ -1,7 +1,7 @@
 package bm.resources;
 
-import bm.models.Category;
-import bm.models.Post;
+import bm.DTO.Category;
+import bm.DTO.Post;
 import bm.services.interfaces.CategoryService;
 
 import javax.inject.Inject;

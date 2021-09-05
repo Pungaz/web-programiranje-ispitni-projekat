@@ -1,4 +1,4 @@
-package bm.models;
+package bm.DTO;
 
 public class PostTag {
 

@@ -1,6 +1,6 @@
 package bm.utils;
 
-import bm.models.Tag;
+import bm.DTO.Tag;
 
 import java.util.List;
 

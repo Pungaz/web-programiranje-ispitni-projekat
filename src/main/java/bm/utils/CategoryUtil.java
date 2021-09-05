@@ -1,6 +1,6 @@
 package bm.utils;
 
-import bm.models.Category;
+import bm.DTO.Category;
 
 public class CategoryUtil {
     public static boolean isEmpty(Category category) {

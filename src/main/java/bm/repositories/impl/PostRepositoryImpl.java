@@ -2,9 +2,9 @@ package bm.repositories.impl;
 
 import bm.exceptions.NotFoundException;
 import bm.exceptions.UnknownException;
-import bm.models.Category;
-import bm.models.Post;
-import bm.models.Tag;
+import bm.DTO.Category;
+import bm.DTO.Post;
+import bm.DTO.Tag;
 import bm.repositories.interfaces.PostRepository;
 
 import java.sql.Connection;
