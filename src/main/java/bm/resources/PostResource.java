@@ -27,6 +27,20 @@ public class PostResource {
         return this.postService.listAllPosts(offset, limit);
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/text")
+    public List<Post> listPostsByText(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit, @QueryParam("text") String text) {
+        return this.postService.listPostsByText(offset, limit, text);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/tag")
+    public List<Post> listPostsByTag(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit, @QueryParam("tag") String tag) {
+        return this.postService.listPostsByTag(offset, limit, tag);
+    }
+
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

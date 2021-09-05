@@ -9,6 +9,8 @@ import bm.services.interfaces.PostService;
 import bm.utils.StringUtil;
 
 import javax.inject.Inject;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +44,14 @@ public class PostServiceImpl implements PostService {
         return this.postRepository.listAllPosts(offset, limit);
     }
 
+    public List<Post> listPostsByText(int offset, int limit, String text) {
+        return this.postRepository.listPostsByText(offset, limit, text);
+    }
+
+    public List<Post> listPostsByTag(int offset, int limit, String tag) {
+        return this.postRepository.listPostsByTag(offset, limit, tag);
+    }
+
     public Post editPost(Post post) {
         post.validate();
         return this.postRepository.updatePost(post);
@@ -49,6 +59,7 @@ public class PostServiceImpl implements PostService {
 
     public void deletePost(long postId) {
         this.postRepository.deletePost(postId);
+        this.postTagRepository.removePostFromTag(postId);
     }
 
 }

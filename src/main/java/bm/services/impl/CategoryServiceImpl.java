@@ -1,6 +1,7 @@
 package bm.services.impl;
 
 import bm.models.Category;
+import bm.models.Post;
 import bm.repositories.interfaces.CategoryRepository;
 import bm.services.interfaces.CategoryService;
 
@@ -27,6 +28,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     public void deleteCategory(long categoryId) {
         this.categoryRepository.deleteCategory(categoryId);
+    }
+
+    public Category findCategoryByPost(Post post){
+        return this.categoryRepository.findCategoryByPost(post);
     }
 
 }

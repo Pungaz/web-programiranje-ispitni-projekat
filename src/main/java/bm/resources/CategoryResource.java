@@ -1,6 +1,7 @@
 package bm.resources;
 
 import bm.models.Category;
+import bm.models.Post;
 import bm.services.interfaces.CategoryService;
 
 import javax.inject.Inject;
@@ -38,6 +39,13 @@ public class CategoryResource {
     @Path("/{categoryId}")
     public void delete(@PathParam("categoryId") long categoryId) {
         this.categoryService.deleteCategory(categoryId);
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/getCategoryByPost")
+    public Category findCategoryByPost(Post post){
+        return this.categoryService.findCategoryByPost(post);
     }
 }
 

@@ -11,7 +11,9 @@ public interface PostRepository {
 
     public List<Post> listAllPosts(int offset, int limit);
 
-    public List<Post> listPostsByTags(long tag_id);
-
     public void deletePost(long post_id);
+
+    List<Post> listPostsByTag(int offset, int limit, String tag);
+
+    List<Post> listPostsByText(int offset, int limit, String text);
 }

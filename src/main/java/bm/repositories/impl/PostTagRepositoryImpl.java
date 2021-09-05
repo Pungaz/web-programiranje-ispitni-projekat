@@ -38,7 +38,23 @@ public class PostTagRepositoryImpl extends PostgreSqlAbstractRepository implemen
     }
 
     @Override
-    public void removePostFromTag(long post_id, long tag_id) {
+    public void removePostFromTag(long postId) {
+        Connection connection = null;
 
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("DELETE FROM post_tag where post_id = ?");
+            preparedStatement.setLong(1, postId);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new UnknownException();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeConnection(connection);
+        }
     }
+
 }

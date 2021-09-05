@@ -4,6 +4,7 @@ import bm.exceptions.ObjectExistsException;
 import bm.exceptions.UnknownException;
 import bm.exceptions.ValidationException;
 import bm.models.Category;
+import bm.models.Post;
 import bm.repositories.interfaces.CategoryRepository;
 
 import java.sql.Connection;
@@ -125,6 +126,35 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
     }
 
     @Override
+    public Category findCategoryByPost(Post post) {
+        Category category = null;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM category WHERE id = ?");
+            preparedStatement.setLong(1, post.getCategory().getId());
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                category = new Category(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("description"), null);
+            }
+
+            return category;
+
+        } catch (SQLException e) {
+            throw new UnknownException();
+        } finally {
+            this.closeResultSet(resultSet);
+            this.closeStatement(preparedStatement);
+            this.closeConnection(connection);
+        }
+    }
+
+    @Override
     public void deleteCategory(long categoryId) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -145,9 +175,6 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
                 throw new ObjectExistsException("At least one post exists in this category. Delete the post before" +
                         " deleting the category");
             }
-
-            preparedStatement.close();
-            connection.close();
         } catch (SQLException e) {
             throw new UnknownException();
         } finally {
@@ -156,5 +183,4 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             this.closeConnection(connection);
         }
     }
-
 }

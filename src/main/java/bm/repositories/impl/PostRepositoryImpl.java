@@ -4,6 +4,7 @@ import bm.exceptions.NotFoundException;
 import bm.exceptions.UnknownException;
 import bm.models.Category;
 import bm.models.Post;
+import bm.models.Tag;
 import bm.repositories.interfaces.PostRepository;
 
 import java.sql.Connection;
@@ -119,7 +120,6 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
                     "\t\t\ton pt.post_id = p.id \n" +
                     "\t\tLEFT JOIN tag as t \n" +
                     "\t\t\ton pt.tag_id = t.id\n" +
-                    "\t) \n" +
                     "LEFT JOIN category as c \n" +
                     "\ton p.category_id = c.id\n" +
                     "order by p.created_at desc\n" +
@@ -162,8 +162,86 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
     }
 
     @Override
-    public List<Post> listPostsByTags(long tag_id) {
-        return null;
+    public List<Post> listPostsByText(int offset, int limit, String text) {
+        int postId = 1, postTitle = 2, postText = 3, postAuthor = 4, postCreatedAt = 5, postNumberOfVisits = 6;
+        List<Post> posts = new ArrayList<>();
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM post WHERE title LIKE ? OR text LIKE ? OFFSET ? LIMIT ?");
+            preparedStatement.setString(1, "%" + text + "%");
+            preparedStatement.setString(2, "%" + text + "%");
+            preparedStatement.setInt(3, offset);
+            preparedStatement.setInt(4, limit);
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                posts.add(new Post(resultSet.getLong(postId), resultSet.getString(postTitle), resultSet.getString(postText),
+                        resultSet.getString(postAuthor), resultSet.getLong(postCreatedAt),
+                        resultSet.getLong(postNumberOfVisits), null, null, null));
+            }
+        } catch (Exception e) {
+            throw new UnknownException();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return posts;
+    }
+
+    @Override
+    public List<Post> listPostsByTag(int offset, int limit, String tagValue) {
+        int postId = 1, postTitle = 2, postText = 3, postAuthor = 4, postCreatedAt = 5, postNumberOfVisits = 6;
+        List<Post> posts = new ArrayList<>();
+        Tag tag;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM tag WHERE value = ?");
+            preparedStatement.setString(1, tagValue);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                tag = new Tag(resultSet.getLong("id"), resultSet.getString("value"));
+
+                preparedStatement = connection.prepareStatement("SELECT p.* " +
+                        "\tFROM(post_tag as pt \n" +
+                        "\t\t FULL JOIN post as p \n" +
+                        "\t\t on pt.post_id = p.id \n" +
+                        "\t\t LEFT JOIN tag as t  \n" +
+                        "\t\t on pt.tag_id = t.id)\n" +
+                        "\t\t \t\t WHERE pt.tag_id = ?" +
+                        "OFFSET ? LIMIT ?");
+                preparedStatement.setLong(1, tag.getId());
+                preparedStatement.setInt(2, offset);
+                preparedStatement.setInt(3, limit);
+                resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    posts.add(new Post(resultSet.getLong(postId), resultSet.getString(postTitle), resultSet.getString(postText),
+                            resultSet.getString(postAuthor), resultSet.getLong(postCreatedAt),
+                            resultSet.getLong(postNumberOfVisits), null, null, null));
+                }
+            }else {
+                throw new UnknownException("Tag doesn't exist");
+            }
+        } catch (Exception e) {
+            throw new UnknownException();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return posts;
     }
 
     @Override
