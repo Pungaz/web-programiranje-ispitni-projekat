@@ -1,12 +1,17 @@
 package bm.resources;
 
 import bm.DTO.User;
+import bm.requests.LoginRequest;
 import bm.services.interfaces.UserService;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/users")
 public class UserResource {
@@ -40,4 +45,24 @@ public class UserResource {
     public List<User> listAllUsers(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit) {
         return this.userService.listAllUsers(offset, limit);
     }
+
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response login(LoginRequest loginRequest) {
+        loginRequest.validate();
+        Map<String, String> response = new HashMap<>();
+
+        String jwt = this.userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        if (jwt == null) {
+            response.put("message", "These credentials do not match our records");
+            return Response.status(422, "Unprocessable Entity").entity(response).build();
+        }
+
+        response.put("jwt", jwt);
+
+        return Response.ok(response).build();
+    }
+
 }

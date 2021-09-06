@@ -1,24 +1,38 @@
 package bm.requests;
 
+import bm.exceptions.ValidationException;
+import bm.utils.EmailUtil;
+import bm.utils.StringUtil;
+
 public class LoginRequest {
 
-    private String username;
+    private String email;
     private String password;
 
     public LoginRequest() {
     }
 
-    public LoginRequest(String username, String password) {
-        this.username = username;
+    public LoginRequest(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public void validate() {
+        if (StringUtil.isEmpty(email)) {
+            throw new ValidationException("Validation of login unsuccessful, email is invalid");
+        } else if (EmailUtil.isValidEmailAddress(email)) {
+            throw new ValidationException("Validation of login unsuccessful, email is invalid");
+        } else if (StringUtil.isEmpty(password)) {
+            throw new ValidationException("Validation of login unsuccessful, password is invalid");
+        }
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

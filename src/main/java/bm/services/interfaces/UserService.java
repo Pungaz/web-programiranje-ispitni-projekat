@@ -12,4 +12,9 @@ public interface UserService {
     public List<User> listAllUsers(int offset, int limit);
 
     public User editUser(User user);
+
+    public String login(String username, String password);
+
+    public boolean isAuthorized(String token);
+
 }

@@ -4,8 +4,14 @@ import bm.DTO.User;
 import bm.exceptions.ValidationException;
 import bm.repositories.interfaces.UserRepository;
 import bm.services.interfaces.UserService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
@@ -16,6 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addUser(User user) {
         user.validate();
+        user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
         return this.userRepository.addUser(user);
     }
 
@@ -36,5 +43,48 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> listAllUsers(int offset, int limit) {
         return this.userRepository.listAllUsers(offset, limit);
+    }
+
+    @Override
+    public String login(String username, String password) {
+
+        String hashedPassword = DigestUtils.sha256Hex(password);
+
+        User user = this.userRepository.findUserByEmail(username);
+        if (user == null || !user.getPassword().equals(hashedPassword)) {
+            return null;
+        }
+
+        Date issuedAt = new Date();
+        Date expiresAt = new Date(issuedAt.getTime() + 24 * 60 * 60 * 1000); // One day
+
+        //Secret should be stored outside of project
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+
+        return JWT.create()
+                .withIssuedAt(issuedAt)
+                .withExpiresAt(expiresAt)
+                .withSubject(username)
+                .withClaim("role", user.getUserType())
+                .sign(algorithm);
+    }
+
+    @Override
+    public boolean isAuthorized(String token) {
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+        JWTVerifier verifier = JWT.require(algorithm)
+                .build();
+        DecodedJWT jwt = verifier.verify(token);
+
+        String username = jwt.getSubject();
+        jwt.getClaim("role").asString();
+
+        User user = this.userRepository.findUserByEmail(username);
+
+        if (user == null) {
+            return false;
+        }
+
+        return true;
     }
 }
