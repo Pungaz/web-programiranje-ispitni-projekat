@@ -18,6 +18,7 @@ public class CommentResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addComment")
     public Comment addComment(Comment comment) {
         return this.commentService.addComment(comment);
     }
@@ -25,6 +26,7 @@ public class CommentResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/editComment")
     public Comment editComment(Comment comment) {
         return this.commentService.editComment(comment);
     }
@@ -32,11 +34,13 @@ public class CommentResource {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/listCommentsByPost")
     public List<Comment> listCommentsByPost(Post post, @DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit) {
         return this.commentService.listCommentsByPost(post, offset, limit);
     }
 
     @DELETE
+    @Path("/deleteComment")
     public void deleteComment(long commentId) {
         this.commentService.deleteComment(commentId);
     }

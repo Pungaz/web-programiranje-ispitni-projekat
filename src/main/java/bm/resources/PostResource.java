@@ -18,12 +18,14 @@ public class PostResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addPost")
     public Post addPost(Post post) {
         return this.postService.addPost(post);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/listAllPosts")
     public List<Post> listAllPosts(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit, @QueryParam("text") String text, @QueryParam("tag") String tag) {
         if (!StringUtil.isEmpty(text)) {
             return this.postService.listPostsByText(offset, limit, text);
@@ -37,13 +39,14 @@ public class PostResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/editPost")
     public Post editPost(Post post) {
         return this.postService.editPost(post);
     }
 
-    @Path("/{postId}")
     @DELETE
-    public void deletePost(@PathParam("postId") long postId) {
+    @Path("/deletePost")
+    public void deletePost(@QueryParam("postId") long postId) {
         this.postService.deletePost(postId);
     }
 

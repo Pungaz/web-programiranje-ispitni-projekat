@@ -18,6 +18,7 @@ public class CategoryResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addCategory")
     public Category addCategory(Category category) {
         return this.categoryService.addCategory(category);
     }
@@ -25,25 +26,27 @@ public class CategoryResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/updateCategory")
     public Category updateCategory(Category category) {
         return this.categoryService.updateCategory(category);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/listAllCategories")
     public List<Category> listAllCategories(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit) {
         return this.categoryService.listAllCategories(offset, limit);
     }
 
     @DELETE
-    @Path("/{categoryId}")
-    public void delete(@PathParam("categoryId") long categoryId) {
+    @Path("/deleteCategory")
+    public void delete(@QueryParam("categoryId") long categoryId) {
         this.categoryService.deleteCategory(categoryId);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getCategoryByPost")
+    @Path("/findCategoryByPost")
     public Category findCategoryByPost(Post post){
         return this.categoryService.findCategoryByPost(post);
     }

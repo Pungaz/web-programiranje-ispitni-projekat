@@ -5,7 +5,6 @@ import bm.requests.LoginRequest;
 import bm.services.interfaces.UserService;
 
 import javax.inject.Inject;
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,6 +21,7 @@ public class UserResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/addUser")
     public User addUser(User user) {
         return this.userService.addUser(user);
     }
@@ -29,26 +29,28 @@ public class UserResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/editUser")
     public User editUser(User user) {
         return this.userService.editUser(user);
     }
 
     @GET
-    @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/findUserByEmail")
     public User findUserByEmail(@QueryParam("email") String email) {
         return this.userService.findUserByEmail(email);
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("/listAllUsers")
     public List<User> listAllUsers(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit) {
         return this.userService.listAllUsers(offset, limit);
     }
 
     @POST
     @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginRequest loginRequest) {
         loginRequest.validate();

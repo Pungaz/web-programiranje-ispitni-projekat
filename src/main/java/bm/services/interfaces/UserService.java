@@ -14,7 +14,4 @@ public interface UserService {
     public User editUser(User user);
 
     public String login(String username, String password);
-
-    public boolean isAuthorized(String token);
-
 }

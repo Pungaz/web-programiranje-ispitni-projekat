@@ -30,7 +30,7 @@ public class User {
     public void validate() {
         if (StringUtil.isEmpty(email)) {
             throw new ValidationException("Validation of user unsuccessful, email is empty");
-        } else if (!EmailUtil.isValidEmailAddress(email)) {
+        } else if (EmailUtil.isNotValidEmailAddress(email)) {
             throw new ValidationException("Validation of user unsuccessful, email is invalid");
         }else if (StringUtil.isEmpty(firstName)) {
             throw new ValidationException("Validation of user unsuccessful, first name is empty");

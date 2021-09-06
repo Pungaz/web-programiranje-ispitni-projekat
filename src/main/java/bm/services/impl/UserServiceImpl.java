@@ -46,11 +46,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(String username, String password) {
+    public String login(String email, String password) {
 
         String hashedPassword = DigestUtils.sha256Hex(password);
 
-        User user = this.userRepository.findUserByEmail(username);
+        User user = this.userRepository.findUserByEmail(email);
         if (user == null || !user.getPassword().equals(hashedPassword)) {
             return null;
         }
@@ -64,27 +64,8 @@ public class UserServiceImpl implements UserService {
         return JWT.create()
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
-                .withSubject(username)
+                .withSubject(email)
                 .withClaim("role", user.getUserType())
                 .sign(algorithm);
-    }
-
-    @Override
-    public boolean isAuthorized(String token) {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
-        JWTVerifier verifier = JWT.require(algorithm)
-                .build();
-        DecodedJWT jwt = verifier.verify(token);
-
-        String username = jwt.getSubject();
-        jwt.getClaim("role").asString();
-
-        User user = this.userRepository.findUserByEmail(username);
-
-        if (user == null) {
-            return false;
-        }
-
-        return true;
     }
 }

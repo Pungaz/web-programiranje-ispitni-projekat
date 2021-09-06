@@ -20,7 +20,7 @@ public class LoginRequest {
     public void validate() {
         if (StringUtil.isEmpty(email)) {
             throw new ValidationException("Validation of login unsuccessful, email is invalid");
-        } else if (EmailUtil.isValidEmailAddress(email)) {
+        } else if (EmailUtil.isNotValidEmailAddress(email)) {
             throw new ValidationException("Validation of login unsuccessful, email is invalid");
         } else if (StringUtil.isEmpty(password)) {
             throw new ValidationException("Validation of login unsuccessful, password is invalid");

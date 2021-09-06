@@ -3,8 +3,8 @@ package bm.utils;
 import org.apache.commons.validator.routines.EmailValidator;
 
 public class EmailUtil {
-    public static boolean isValidEmailAddress(String email) {
+    public static boolean isNotValidEmailAddress(String email) {
         EmailValidator validator = EmailValidator.getInstance();
-        return validator.isValid(email);
+        return !validator.isValid(email);
     }
 }
