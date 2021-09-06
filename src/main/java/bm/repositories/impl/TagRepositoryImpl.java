@@ -19,7 +19,7 @@ public class TagRepositoryImpl extends PostgreSqlAbstractRepository implements T
         try {
             connection = this.newConnection();
 
-            preparedStatement = connection.prepareStatement("select * from tag where value = ?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM tag WHERE VALUE = ?");
             preparedStatement.setString(1, tag.getValue());
             resultSet = preparedStatement.executeQuery();
 

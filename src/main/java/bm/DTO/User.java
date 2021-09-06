@@ -1,6 +1,7 @@
 package bm.DTO;
 
 import bm.exceptions.ValidationException;
+import bm.utils.EmailUtil;
 import bm.utils.StringUtil;
 
 public class User {
@@ -28,17 +29,19 @@ public class User {
 
     public void validate() {
         if (StringUtil.isEmpty(email)) {
-            throw new ValidationException("Validation of user unsuccessful");
-        } else if (StringUtil.isEmpty(firstName)) {
-            throw new ValidationException("Validation of user unsuccessful");
+            throw new ValidationException("Validation of user unsuccessful, email is empty");
+        } else if (!EmailUtil.isValidEmailAddress(email)) {
+            throw new ValidationException("Validation of user unsuccessful, email is invalid");
+        }else if (StringUtil.isEmpty(firstName)) {
+            throw new ValidationException("Validation of user unsuccessful, first name is empty");
         } else if (StringUtil.isEmpty(lastName)) {
-            throw new ValidationException("Validation of user unsuccessful");
+            throw new ValidationException("Validation of user unsuccessful, last name is empty");
         } else if (StringUtil.isEmpty(userType)) {
-            throw new ValidationException("Validation of user unsuccessful");
+            throw new ValidationException("Validation of user unsuccessful, user type is empty");
         } else if (StringUtil.isEmpty(status)) {
-            throw new ValidationException("Validation of user unsuccessful");
+            throw new ValidationException("Validation of user unsuccessful, status is empty");
         } else if (StringUtil.isEmpty(password)) {
-            throw new ValidationException("Validation of user unsuccessful");
+            throw new ValidationException("Validation of user unsuccessful, password is empty");
         }
     }
 

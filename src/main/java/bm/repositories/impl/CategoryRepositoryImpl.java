@@ -24,7 +24,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
         try {
             connection = this.newConnection();
 
-            preparedStatement = connection.prepareStatement("select exists(select from category where name = ?)");
+            preparedStatement = connection.prepareStatement("SELECT EXISTS(SELECT FROM category WHERE name = ?)");
             preparedStatement.setString(1, category.getName());
             resultSet = preparedStatement.executeQuery();
 

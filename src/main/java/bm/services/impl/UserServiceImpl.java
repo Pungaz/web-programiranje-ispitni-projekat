@@ -1,34 +1,40 @@
 package bm.services.impl;
 
 import bm.DTO.User;
+import bm.exceptions.ValidationException;
+import bm.repositories.interfaces.UserRepository;
 import bm.services.interfaces.UserService;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
+    @Inject
+    private UserRepository userRepository;
+
     @Override
     public User addUser(User user) {
-        return null;
+        user.validate();
+        return this.userRepository.addUser(user);
     }
 
     @Override
-    public User findUser(String username) {
-        return null;
+    public User editUser(User user) {
+        user.validate();
+        if (user.getId() == 0){
+            throw new ValidationException("User ID is incorrect");
+        }
+        return this.userRepository.editUser(user);
     }
 
     @Override
-    public List<User> listAllUsers() {
-        return null;
+    public User findUserByEmail(String email) {
+        return this.userRepository.findUserByEmail(email);
     }
 
     @Override
-    public User editUser(User user, String username) {
-        return null;
-    }
-
-    @Override
-    public void changeStatus(String username, int newStatus) {
-
+    public List<User> listAllUsers(int offset, int limit) {
+        return this.userRepository.listAllUsers(offset, limit);
     }
 }
