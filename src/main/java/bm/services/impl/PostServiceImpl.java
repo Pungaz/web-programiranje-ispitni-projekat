@@ -1,10 +1,10 @@
 package bm.services.impl;
 
+import bm.DTO.Category;
+import bm.DTO.Comment;
 import bm.DTO.Post;
 import bm.DTO.Tag;
-import bm.repositories.interfaces.PostRepository;
-import bm.repositories.interfaces.PostTagRepository;
-import bm.repositories.interfaces.TagRepository;
+import bm.repositories.interfaces.*;
 import bm.services.interfaces.PostService;
 import bm.utils.StringUtil;
 
@@ -21,6 +21,10 @@ public class PostServiceImpl implements PostService {
     private TagRepository tagRepository;
     @Inject
     private PostTagRepository postTagRepository;
+    @Inject
+    private CategoryRepository categoryRepository;
+    @Inject
+    private CommentRepository commentRepository;
 
     public Post addPost(Post post) {
         post.validate();
@@ -49,6 +53,25 @@ public class PostServiceImpl implements PostService {
     public List<Post> listPostsByTag(int offset, int limit, String tag) {
         return this.postRepository.listPostsByTag(offset, limit, tag);
     }
+
+    public Post getPostById(long postId) {
+        Category category = this.categoryRepository.findCategoryByPostId(postId);
+        List<Tag> tags = this.tagRepository.findTagsByPostId(postId);
+        List<Comment> comments = this.commentRepository.listCommentsByPostId(postId, 0, 10000);
+        Post post = this.postRepository.getPostById(postId);
+        post.setCategory(category);
+        post.setComments(comments);
+
+        StringBuilder sb = new StringBuilder();
+        for (Tag tag : tags) {
+            sb.append(tag.getValue());
+        }
+        String tagsString = sb.toString();
+        post.setTagsString(tagsString);
+
+        return post;
+    }
+
 
     public Post editPost(Post post) {
         post.validate();

@@ -1,5 +1,6 @@
 package bm.repositories.impl;
 
+import bm.DTO.Comment;
 import bm.exceptions.NotFoundException;
 import bm.exceptions.UnknownException;
 import bm.DTO.Category;
@@ -264,5 +265,38 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
             this.closeStatement(preparedStatement);
             this.closeConnection(connection);
         }
+    }
+
+    @Override
+    public Post getPostById(long postId) {
+        Post post = null;
+        int postIdNum = 1, postTitle = 2, postText = 3, postAuthor = 4, postCreatedAt = 5, postNumberOfVisits = 6;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
+
+            preparedStatement = connection.prepareStatement("SELECT * FROM post WHERE id = ?");
+            preparedStatement.setLong(1, postId);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                post = new Post(resultSet.getLong(postIdNum), resultSet.getString(postTitle), resultSet.getString(postText),
+                        resultSet.getString(postAuthor), resultSet.getLong(postCreatedAt),
+                        resultSet.getLong(postNumberOfVisits), null, null, null);
+            }else {
+                throw new NotFoundException("No post with id: " + postId);
+            }
+
+        } catch (Exception e) {
+            throw new UnknownException();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return post;
     }
 }

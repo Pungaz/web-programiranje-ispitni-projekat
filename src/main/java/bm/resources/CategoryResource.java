@@ -47,8 +47,8 @@ public class CategoryResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/findCategoryByPost")
-    public Category findCategoryByPost(Post post){
-        return this.categoryService.findCategoryByPost(post);
+    public Category findCategoryByPost(long postId){
+        return this.categoryService.findCategoryByPostId(postId);
     }
 }
 

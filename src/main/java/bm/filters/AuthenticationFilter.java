@@ -63,7 +63,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private boolean isAuthnNotRequired(ContainerRequestContext req) {
         if (req.getUriInfo().getPath().contains("login") || req.getUriInfo().getPath().contains("findCategoryByPost") ||
                 req.getUriInfo().getPath().contains("listAllCategories") || req.getUriInfo().getPath().contains("addComment")
-                || req.getUriInfo().getPath().contains("listCommentsByPost") || req.getUriInfo().getPath().contains("listAllPosts")) {
+                || req.getUriInfo().getPath().contains("listCommentsByPost") || req.getUriInfo().getPath().contains("listAllPosts")
+                || req.getUriInfo().getPath().contains("getPostById")) {
             return true;
         }
         return false;

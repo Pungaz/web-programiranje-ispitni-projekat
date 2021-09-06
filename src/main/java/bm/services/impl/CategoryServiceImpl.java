@@ -30,8 +30,8 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryRepository.deleteCategory(categoryId);
     }
 
-    public Category findCategoryByPost(Post post){
-        return this.categoryRepository.findCategoryByPost(post);
+    public Category findCategoryByPostId(long postId){
+        return this.categoryRepository.findCategoryByPostId(postId);
     }
 
 }

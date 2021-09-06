@@ -95,7 +95,7 @@ public class CommentRepositoryImpl extends PostgreSqlAbstractRepository implemen
     }
 
     @Override
-    public List<Comment> listCommentsByPost(Post post, int offset, int limit) {
+    public List<Comment> listCommentsByPostId(long postId, int offset, int limit) {
         List<Comment> comments = new ArrayList<>();
 
         Connection connection = null;
@@ -105,7 +105,7 @@ public class CommentRepositoryImpl extends PostgreSqlAbstractRepository implemen
             connection = this.newConnection();
 
             preparedStatement = connection.prepareStatement("SELECT * FROM comment WHERE post_id = ? OFFSET ? LIMIT ?");
-            preparedStatement.setLong(1, post.getId());
+            preparedStatement.setLong(1, postId);
             preparedStatement.setInt(2, offset);
             preparedStatement.setInt(3, limit);
             resultSet = preparedStatement.executeQuery();

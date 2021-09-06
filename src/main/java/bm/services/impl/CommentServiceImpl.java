@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> listCommentsByPost(Post post, int offset, int limit) {
-        return this.commentRepository.listCommentsByPost(post, offset, limit);
+    public List<Comment> listCommentsByPostId(long postId, int offset, int limit) {
+        return this.commentRepository.listCommentsByPostId(postId, offset, limit);
     }
 }

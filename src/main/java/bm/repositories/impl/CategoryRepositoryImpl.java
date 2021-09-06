@@ -1,5 +1,6 @@
 package bm.repositories.impl;
 
+import bm.exceptions.NotFoundException;
 import bm.exceptions.ObjectExistsException;
 import bm.exceptions.UnknownException;
 import bm.exceptions.ValidationException;
@@ -126,7 +127,8 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
     }
 
     @Override
-    public Category findCategoryByPost(Post post) {
+    public Category findCategoryByPostId(long postId) {
+        long categoryId;
         Category category = null;
 
         Connection connection = null;
@@ -135,15 +137,23 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
         try {
             connection = this.newConnection();
 
+            preparedStatement = connection.prepareStatement("SELECT category_id FROM post WHERE id = ?");
+            preparedStatement.setLong(1, postId);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()){
+                categoryId = resultSet.getLong(1);
+            }else {
+                throw new NotFoundException("No post with id: " + postId);
+            }
+
             preparedStatement = connection.prepareStatement("SELECT * FROM category WHERE id = ?");
-            preparedStatement.setLong(1, post.getCategory().getId());
+            preparedStatement.setLong(1, categoryId);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 category = new Category(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("description"), null);
             }
-
-            return category;
 
         } catch (SQLException e) {
             throw new UnknownException();
@@ -152,6 +162,7 @@ public class CategoryRepositoryImpl extends PostgreSqlAbstractRepository impleme
             this.closeStatement(preparedStatement);
             this.closeConnection(connection);
         }
+        return category;
     }
 
     @Override

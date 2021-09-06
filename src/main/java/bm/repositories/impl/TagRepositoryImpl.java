@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TagRepositoryImpl extends PostgreSqlAbstractRepository implements TagRepository {
 
@@ -51,12 +53,36 @@ public class TagRepositoryImpl extends PostgreSqlAbstractRepository implements T
     }
 
     @Override
-    public Tag updateTag(Tag tag) {
-        return null;
-    }
+    public List<Tag> findTagsByPostId(long postId) {
+        List<Tag> tags = new ArrayList<>();
 
-    @Override
-    public void deleteTag(long tag_id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = this.newConnection();
 
+            preparedStatement = connection.prepareStatement("SELECT p.*, t.*, c.* \n" +
+                    "FROM(\n" +
+                    "\t\tpost_tag as pt \n" +
+                    "\t\tFULL JOIN post as p \n" +
+                    "\t\t\ton pt.post_id = p.id \n" +
+                    "\t\tLEFT JOIN tag as t \n" +
+                    "\t\t\ton pt.tag_id = t.id\n" +
+                    "LEFT JOIN category as c \n" +
+                    "\ton p.category_id = c.id)\n");
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                tags.add(new Tag(resultSet.getLong(8), resultSet.getString(9)));
+            }
+        } catch (Exception e) {
+            throw new UnknownException();
+        } finally {
+            this.closeStatement(preparedStatement);
+            this.closeResultSet(resultSet);
+            this.closeConnection(connection);
+        }
+        return tags;
     }
 }

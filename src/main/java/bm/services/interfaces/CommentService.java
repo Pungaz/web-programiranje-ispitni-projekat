@@ -12,5 +12,5 @@ public interface CommentService {
 
     public Comment editComment(Comment comment);
 
-    public List<Comment> listCommentsByPost(Post post, int offset, int limit);
+    public List<Comment> listCommentsByPostId(long postId, int offset, int limit);
 }
