@@ -18,6 +18,7 @@ const _axios = axios.create(config);
 
 _axios.interceptors.request.use(
   function(config) {
+    console.log("out")
     // Do something before request is sent
     return config;
   },
