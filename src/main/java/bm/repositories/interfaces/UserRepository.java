@@ -7,11 +7,11 @@ import java.util.List;
 public interface UserRepository {
     public User addUser(User user);
 
-    public void deleteUser(User user);
-
-    public User changeUserType(User user);
+    public User findUser(String username);
 
     public List<User> listAllUsers();
 
-    public User findUser(User user);
+    public User editUser(User user, String username);
+
+    public void changeStatus(String username, int newStatus);
 }

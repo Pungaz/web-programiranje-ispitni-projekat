@@ -121,7 +121,7 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
                     "\t\tLEFT JOIN tag as t \n" +
                     "\t\t\ton pt.tag_id = t.id\n" +
                     "LEFT JOIN category as c \n" +
-                    "\ton p.category_id = c.id\n" +
+                    "\ton p.category_id = c.id)\n" +
                     "order by p.created_at desc\n" +
                     "OFFSET ? LIMIT ?");
             preparedStatement.setLong(1, offset);
@@ -134,7 +134,10 @@ public class PostRepositoryImpl extends PostgreSqlAbstractRepository implements 
                 long currentPostId = resultSet.getLong(postId);
 
                 if (!postTags.containsKey(currentPostId)) {
-                    postTags.put(currentPostId, Collections.singletonList(resultSet.getString(tagValue)));
+                    ArrayList<String> listOfTags = new ArrayList<>();
+                    listOfTags.add(resultSet.getString(tagValue));
+
+                    postTags.put(currentPostId, listOfTags);
 
                     Category category = new Category(resultSet.getLong(categoryId), resultSet.getString(categoryName),
                             resultSet.getString(categoryDescription), null);

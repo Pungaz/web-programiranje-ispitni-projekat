@@ -1,6 +1,7 @@
 package bm.DTO;
 
 import bm.exceptions.ValidationException;
+import bm.utils.PostUtil;
 import bm.utils.StringUtil;
 
 public class Comment {
@@ -14,19 +15,21 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String author, String text, long createdAt, Post post, long id) {
+    public Comment(long id, String author, String text, long createdAt, Post post) {
+        this.id = id;
         this.author = author;
         this.text = text;
         this.createdAt = createdAt;
         this.post = post;
-        this.id = id;
     }
 
     public void validate() {
         if (StringUtil.isEmpty(author)) {
-            throw new ValidationException("Validation of comment unsuccessful");
+            throw new ValidationException("Validation of comment unsuccessful, author is invalis");
         } else if (StringUtil.isEmpty(text)) {
-            throw new ValidationException("Validation of comment unsuccessful");
+            throw new ValidationException("Validation of comment unsuccessful, text is invalis");
+        } else if (PostUtil.isEmpty(post)) {
+            throw new ValidationException("Validation of comment unsuccessful, post is invalis");
         }
     }
 

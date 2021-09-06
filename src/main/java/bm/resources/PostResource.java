@@ -2,13 +2,14 @@ package bm.resources;
 
 import bm.DTO.Post;
 import bm.services.interfaces.PostService;
+import bm.utils.StringUtil;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/post")
+@Path("/posts")
 public class PostResource {
 
     @Inject
@@ -23,22 +24,14 @@ public class PostResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Post> listAllPosts(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit) {
-        return this.postService.listAllPosts(offset, limit);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/text")
-    public List<Post> listPostsByText(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit, @QueryParam("text") String text) {
-        return this.postService.listPostsByText(offset, limit, text);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/tag")
-    public List<Post> listPostsByTag(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit, @QueryParam("tag") String tag) {
-        return this.postService.listPostsByTag(offset, limit, tag);
+    public List<Post> listAllPosts(@DefaultValue("0") @QueryParam("offset") int offset, @DefaultValue("5") @QueryParam("limit") int limit, @QueryParam("text") String text, @QueryParam("tag") String tag) {
+        if (!StringUtil.isEmpty(text)) {
+            return this.postService.listPostsByText(offset, limit, text);
+        } else if (!StringUtil.isEmpty(tag)) {
+            return this.postService.listPostsByTag(offset, limit, tag);
+        } else {
+            return this.postService.listAllPosts(offset, limit);
+        }
     }
 
     @PUT
