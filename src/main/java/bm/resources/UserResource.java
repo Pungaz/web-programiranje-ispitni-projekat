@@ -50,7 +50,6 @@ public class UserResource {
 
     @POST
     @Path("/login")
-    @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(LoginRequest loginRequest) {
         loginRequest.validate();
